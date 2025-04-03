@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malayalam OCR Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-light: #f8f9fa;
+            --secondary-light: #e9ecef;
+            --accent-light: #0d6efd;
+            --text-light: #212529;
+            
+            --primary-dark: #212529;
+            --secondary-dark: #343a40;
+            --accent-dark: #0dcaf0;
+            --text-dark: #f8f9fa;
+            
+            --current-primary: var(--primary-light);
+            --current-secondary: var(--secondary-light);
+            --current-accent: var(--accent-light);
+            --current-text: var(--text-light);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--current-primary);
+            color: var(--current-text);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .dark-mode {
+            --current-primary: var(--primary-dark);
+            --current-secondary: var(--secondary-dark);
+            --current-accent: var(--accent-dark);
+            --current-text: var(--text-dark);
+        }
+
+        /* Header Styles */
+        .navbar {
+            background-color: var(--current-primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--current-text);
+        }
+
+        .navbar-brand:hover {
+            color: var(--current-text);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-link {
+            color: var(--current-text);
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s;
+            text-decoration: none !important;
+        }
+
+        .nav-link:hover {
+            color: var(--current-accent);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--current-text);
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: var(--current-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--current-accent), #6f42c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background-color: var(--current-accent);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+        }
+
+        /* OCR Section */
+        .ocr-section {
+            padding: 80px 0;
+            background-color: var(--current-secondary);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: var(--current-primary);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed rgba(13, 110, 253, 0.5);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            background-color: var(--current-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .drag-drop-area.highlight {
+            border-color: var(--current-accent);
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+
+        .drag-drop-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .drag-drop-content i {
+            font-size: 3rem;
+            color: #d9dade;
+        }
+
+        .drag-drop-content h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .drag-drop-content p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .upload-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Improved Button Styles */
+        .btn-upload-xs {
+            background-color: var(--current-accent);
+            color: #d9dade;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .btn-upload-xs:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background-color: var(--current-accent);
+            opacity: 0.9;
+        }
+
+        .btn-upload-xs i {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .image-preview-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+            position: relative;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .image-preview:hover {
+            transform: scale(1.01);
+        }
+
+        .process-buttons {
+            display: none;
+            margin-top: 20px;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-upload {
+            background-color: var(--current-accent);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            background-color: var(--current-accent);
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background-color: var(--current-secondary);
+            color: var(--current-text);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--current-secondary);
+            opacity: 0.9;
+        }
+
+        /* Processing Modal */
+        .processing-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .processing-content {
+            background-color: var(--current-primary);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: var(--current-secondary);
+            border-radius: 10px;
+            margin: 20px 0;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--current-accent), #6f42c1);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-text-container {
+            background-color: var(--current-secondary);
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .result-text {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .accuracy-display {
+            background-color: rgba(13, 110, 253, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            font-weight: 500;
+            color: var(--current-accent);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .btn-result {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-copy {
+            background-color: var(--current-accent);
+            color: white;
+        }
+
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+        }
+
+
+        /* Team Section */
+        .team-section {
+            padding: 80px 0;
+            background-color: var(--current-primary);
+        }
+
+        .team-member {
+            background-color: var(--current-secondary);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .team-member h4 {
+            font-size: 1.3rem;
+            margin: 0;
+            color: var(--current-accent);
+        }
+
+        .team-member p {
+            margin: 5px 0 0;
+            opacity: 0.8;
+            font-size: 0.85rem;
+        }
+
+        /* Camera Modal Buttons */
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .btn-camera {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* Enhanced Fullscreen Preview Styles */
+        .fullscreen-preview {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            z-index: 2000;
+            cursor: zoom-out;
+            overflow: hidden;
+        }
+
+        .preview-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            transform-origin: center center;
+        }
+
+        .fullscreen-image.zoom {
+            transform: scale(2);
+            cursor: grab;
+        }
+
+        .fullscreen-image.zoom.dragging {
+            cursor: grabbing;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 35px;
+            color: white;
+            cursor: pointer;
+            z-index: 2001;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            color: var(--current-accent);
+        }
+
+        /* Animations */
+        [data-aos] {
+            transition: all 0.8s ease;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            .upload-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            .process-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .result-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .team-member h4 {
+                font-size: 1.1rem;
+            }
+            .camera-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-upload-xs {
+                width: 100%;
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-language me-2"></i> Malayalam OCR Project
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#ocr">OCR</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#team">Team</a>
+                    </li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="ri-moon-line"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content" data-aos="fade-up">
+            <h1 class="hero-title">Malayalam OCR</h1>
+            <p class="hero-subtitle">Convert Malayalam text from images to editable digital text with high accuracy</p>
+            <a href="#ocr" class="cta-button">Go to OCR</a>
+        </div>
+    </section>
+
+    <!-- OCR Section -->
+    <section id="ocr" class="ocr-section">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Malayalam OCR</h2>
+                <p>Upload an image containing Malayalam text to convert it to digital text</p>
+            </div>
+            <div class="upload-container" data-aos="fade-up" data-aos-delay="100">
+                <div class="drag-drop-area" id="dragDropArea">
+                    <div class="drag-drop-content">
+                        <i class="ri-upload-cloud-2-line"></i>
+                        <h4>Drag & Drop your image here</h4>
+                        <p>or</p>
+                        <div class="upload-options">
+                            <button id="selectFileBtn" class="btn-upload-xs">
+                                <i class="ri-folder-open-line"></i> Select File
+                            </button>
+                            <button id="cameraBtn" class="btn-upload-xs">
+                                <i class="ri-camera-line"></i> Use Camera
+                            </button>
+                        </div>
+                    </div>
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <img id="imagePreview" class="image-preview" alt="Preview">
+                    </div>
+                </div>
+                <div class="process-buttons" id="processButtons">
+                    <button id="processButton" class="btn-upload">
+                        <i class="ri-upload-cloud-line"></i> Upload and Process
+                    </button>
+                    <button id="clearButton" class="btn-upload btn-secondary">
+                        <i class="ri-close-line"></i> Clear
+                    </button>
+                </div>
+                <input type="file" id="imageUpload" accept="image/*" class="hidden-file-input">
+            </div>
+        </div>
+    </section>
+
+    <!-- Processing Modal -->
+    <div class="processing-modal" id="processingModal">
+        <div class="processing-content">
+            <h3 class="text-center">Processing Image</h3>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+            
+            <div class="result-container" id="resultContainer">
+                <h4 class="mb-3">OCR Results:</h4>
+                <div class="result-text-container">
+                    <pre class="result-text" id="modalOutputText"></pre>
+                </div>
+                <div class="accuracy-display mt-3" id="modalAccuracy"></div>
+                
+                <div class="result-actions">
+                    <button class="btn-result btn-copy" id="modalCopyBtn">
+                        <i class="ri-file-copy-line"></i> Copy Text
+                    </button>
+                    <button class="btn-result btn-download" id="modalDownloadBtn">
+                        <i class="ri-download-line"></i> Download Text
+                    </button>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <section id="team" class="team-section">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Our Team</h2>
+                <p>The people behind this project</p>
+            </div>
+            <div class="row">
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="team-member">
+                        <h4>Irin Jossy</h4>
+                        <p>Team Member</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="team-member">
+                        <h4>Nikitha Liz Koshy</h4>
+                        <p>Team Member</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="team-member">
+                        <h4>Mahima Rachel Bijoy</h4>
+                        <p>Team Member</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="team-member">
+                        <h4>Adhwaith A M</h4>
+                        <p>Team Member</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fullscreen Image Preview Modal -->
+    <div id="fullscreenPreview" class="fullscreen-preview">
+        <span class="close-btn" onclick="closePreview()">✖</span>
+        <div class="preview-content">
+            <img id="fullscreenImage" class="fullscreen-image" alt="Preview">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Dark/Light mode toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const icon = themeToggle.querySelector('i');
+        const navbarBrand = document.querySelector('.navbar-brand');
+        
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            icon.classList.replace('ri-moon-line', 'ri-sun-line');
+            navbarBrand.style.color = 'var(--text-dark)';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.replace('ri-moon-line', 'ri-sun-line');
+                navbarBrand.style.color = 'var(--text-dark)';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.replace('ri-sun-line', 'ri-moon-line');
+                navbarBrand.style.color = 'var(--text-light)';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // DOM Elements
+        const fileInput = document.getElementById('imageUpload');
+        const dragDropArea = document.getElementById('dragDropArea');
+        const selectFileBtn = document.getElementById('selectFileBtn');
+        const cameraBtn = document.getElementById('cameraBtn');
+        const processButton = document.getElementById('processButton');
+        const clearButton = document.getElementById('clearButton');
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const processButtons = document.getElementById('processButtons');
+        const dragDropContent = document.querySelector('.drag-drop-content');
+        const processingModal = document.getElementById('processingModal');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const resultContainer = document.getElementById('resultContainer');
+        const modalOutputText = document.getElementById('modalOutputText');
+        const modalAccuracy = document.getElementById('modalAccuracy');
+        const modalCopyBtn = document.getElementById('modalCopyBtn');
+        const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+
+
+        // Draggable Zoom Variables
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let translateX = 0;
+        let translateY = 0;
+        let scale = 1;
+
+        // Event Listeners
+        selectFileBtn.addEventListener('click', () => fileInput.click());
+        cameraBtn.addEventListener('click', openCamera);
+        processButton.addEventListener('click', uploadImage);
+        clearButton.addEventListener('click', clearImage);
+        modalCopyBtn.addEventListener('click', copyToClipboard);
+        modalDownloadBtn.addEventListener('click', downloadText);
+        fileInput.addEventListener('change', handleFileSelect);
+
+   
+
+        // Enhanced Image Preview with Draggable Zoom
+        function enlargeImage() {
+            const fullscreenContainer = document.getElementById("fullscreenPreview");
+            const fullscreenImage = document.getElementById("fullscreenImage");
+            const smallImage = document.getElementById("imagePreview");
+
+            fullscreenImage.src = smallImage.src;
+            fullscreenContainer.style.display = "flex";
+            resetDragState();
+            updateImageTransform();
+            
+            // Click to toggle zoom
+            fullscreenImage.onclick = function(e) {
+                if (isDragging) {
+                    isDragging = false;
+                    return;
+                }
+                
+                if (scale === 1) {
+                    scale = 2;
+                    this.classList.add('zoom');
+                } else {
+                    resetDragState();
+                    this.classList.remove('zoom');
+                }
+                updateImageTransform();
+            };
+
+            // Drag events
+            fullscreenImage.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+            fullscreenImage.addEventListener('touchstart', startDrag);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function resetDragState() {
+            isDragging = false;
+            startX = 0;
+            startY = 0;
+            translateX = 0;
+            translateY = 0;
+            scale = 1;
+        }
+
+        function startDrag(e) {
+            if (scale === 1) return;
+            
+            isDragging = true;
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            startX = clientX - translateX;
+            startY = clientY - translateY;
+            
+            document.getElementById("fullscreenImage").classList.add('dragging');
+            e.preventDefault();
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            
+            updateImageTransform();
+            e.preventDefault();
+        }
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            document.getElementById("fullscreenImage").classList.remove('dragging');
+        }
+
+        function updateImageTransform() {
+            const img = document.getElementById("fullscreenImage");
+            img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+
+        function closePreview() {
+            document.getElementById("fullscreenPreview").style.display = "none";
+            // Remove event listeners when preview is closed
+            const fullscreenImage = document.getElementById("fullscreenImage");
+            fullscreenImage.removeEventListener('mousedown', startDrag);
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', endDrag);
+            fullscreenImage.removeEventListener('touchstart', startDrag);
+            document.removeEventListener('touchmove', drag);
+            document.removeEventListener('touchend', endDrag);
+        }
+
+        // Close preview when clicking outside image
+        document.getElementById('fullscreenPreview').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePreview();
+            }
+        });
+
+        // Drag and Drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dragDropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dragDropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dragDropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dragDropArea.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            dragDropArea.classList.remove('highlight');
+        }
+
+        dragDropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (files.length && files[0].type.match('image.*')) {
+                fileInput.files = files;
+                previewImage(files[0]);
+            }
+        }
+
+        function previewImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                dragDropContent.style.display = 'none';
+                imagePreviewContainer.style.display = 'block';
+                processButtons.style.display = 'flex';
+                
+                // Add click handler for preview
+                imagePreview.onclick = function() {
+                    enlargeImage();
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage() {
+            fileInput.value = '';
+            imagePreview.src = '';
+            dragDropContent.style.display = 'flex';
+            imagePreviewContainer.style.display = 'none';
+            processButtons.style.display = 'none';
+        }
+
+        // Camera functionality
+        let stream = null;
+
+        async function openCamera() {
+            try {
+                const cameraModal = document.createElement('div');
+                cameraModal.style.position = 'fixed';
+                cameraModal.style.top = '0';
+                cameraModal.style.left = '0';
+                cameraModal.style.width = '100%';
+                cameraModal.style.height = '100%';
+                cameraModal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+                cameraModal.style.zIndex = '1000';
+                cameraModal.style.display = 'flex';
+                cameraModal.style.flexDirection = 'column';
+                cameraModal.style.justifyContent = 'center';
+                cameraModal.style.alignItems = 'center';
+                
+                const video = document.createElement('video');
+                video.autoplay = true;
+                video.playsInline = true;
+                video.style.width = '80%';
+                video.style.maxWidth = '500px';
+                video.style.borderRadius = '10px';
+                
+                const controls = document.createElement('div');
+                controls.className = 'camera-controls';
+                
+                const captureBtn = document.createElement('button');
+                captureBtn.textContent = 'Capture';
+                captureBtn.className = 'btn-upload btn-camera';
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = 'Close';
+                closeBtn.className = 'btn-upload btn-secondary btn-camera';
+                
+                controls.appendChild(captureBtn);
+                controls.appendChild(closeBtn);
+                cameraModal.appendChild(video);
+                cameraModal.appendChild(controls);
+                document.body.appendChild(cameraModal);
+                
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                
+                closeBtn.addEventListener('click', () => {
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                    document.body.removeChild(cameraModal);
+                });
+                
+                captureBtn.addEventListener('click', () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    canvas.toBlob(blob => {
+                        const file = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                        previewImage(file);
+                        if (stream) {
+                            stream.getTracks().forEach(track => track.stop());
+                        }
+                        document.body.removeChild(cameraModal);
+                    }, 'image/jpeg', 0.9);
+                });
+            } catch (err) {
+                console.error("Error accessing camera:", err);
+                alert("Could not access the camera. Please check permissions.");
+            }
+        }
+
+        // Upload and process image - REAL OCR FUNCTIONALITY
+        async function uploadImage() {
+            if (!fileInput.files.length) {
+                alert("Please select an image first!");
+                return;
+            }
+
+            // Show processing modal
+            processingModal.style.display = 'flex';
+            resultContainer.style.display = 'none';
+            
+            // Simulate progress (in real app, this would come from server events)
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                updateProgress(progress);
+                
+                if (progress === 100) {
+                    clearInterval(progressInterval);
+                    processComplete();
+                }
+            }, 300);
+
+            try {
+                const formData = new FormData();
+                formData.append('image', fileInput.files[0]);
+
+                // Make actual API call to your backend
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Update modal with results from backend
+                modalOutputText.textContent = data.text || "No text detected";
+                
+                if (data.confidence !== undefined) {
+                    const confidencePercent = parseFloat(data.confidence).toFixed(2);
+                    modalAccuracy.textContent = `OCR Confidence: ${confidencePercent}%`;
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                modalOutputText.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function updateProgress(percent) {
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = `${Math.round(percent)}%`;
+        }
+
+        function processComplete() {
+            resultContainer.style.display = 'block';
+        }
+
+        function copyToClipboard() {
+            const text = modalOutputText.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = modalCopyBtn.innerHTML;
+                modalCopyBtn.innerHTML = '<i class="ri-check-line"></i> Copied!';
+                setTimeout(() => {
+                    modalCopyBtn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        function downloadText() {
+            const text = modalOutputText.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'malayalam-ocr-output.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        
+        // Close modal when clicking outside
+        processingModal.addEventListener('click', (e) => {
+            if (e.target === processingModal) {
+                processingModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
