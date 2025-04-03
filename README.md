@@ -13,6 +13,7 @@ College final year project that converts handwritten Malayalam text into digital
 
 
 **Highlights**  
+
 ✔ High accuracy(>95%). 
 
 ✔ Supports handwritten Malayalam text.
@@ -21,6 +22,7 @@ College final year project that converts handwritten Malayalam text into digital
 
 
 **Technologies Used**
+
 ✔ Python
 
 ✔ HTML
