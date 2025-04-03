@@ -2,7 +2,7 @@
 College final year project that converts handwritten Malayalam text into digital form with *95%+ accuracy*. 
 
 
-## Installation & Usage  
+**Installation & Usage**  
 1. Install dependencies:  
    ```bash
    pip install -r requirements.txt
@@ -14,12 +14,15 @@ College final year project that converts handwritten Malayalam text into digital
 
 ## Highlights  
 ✔ High accuracy(>95%). 
+
 ✔ Supports handwritten Malayalam text.
+
 ✔ Easy to set up and use.
 
 
 ## Technologies Used
 ✔ Python
+
 ✔ HTML
 
 
