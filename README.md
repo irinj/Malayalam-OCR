@@ -12,7 +12,7 @@ College final year project that converts handwritten Malayalam text into digital
    python app.py
 
 
-## Highlights  
+**Highlights**  
 ✔ High accuracy(>95%). 
 
 ✔ Supports handwritten Malayalam text.
@@ -20,12 +20,12 @@ College final year project that converts handwritten Malayalam text into digital
 ✔ Easy to set up and use.
 
 
-## Technologies Used
+**Technologies Used**
 ✔ Python
 
 ✔ HTML
 
 
-## Model Training  
-Train the model using **Kaggle**:  
+**Model Training**  
+Train the model using *Kaggle*:  
 🔗 [Click here](https://www.kaggle.com/) to access datasets and training resources.
